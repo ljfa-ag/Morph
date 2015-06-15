@@ -84,7 +84,28 @@ public class EntityHelper extends EntityHelperBase
 		MorphState prevState = new MorphState(player.worldObj, player.getCommandSenderName(), username1, prevTag, false);
 		MorphState nextState = new MorphState(player.worldObj, player.getCommandSenderName(), username2, nextTag, false);
 
-        if(Morph.proxy.tickHandlerServer.hasMorphState(player, nextState) || !forced && MinecraftForge.EVENT_BUS.post(new MorphAcquiredEvent(player, nextState.entInstance)))
+		NBTTagCompound killsTag = Morph.proxy.tickHandlerServer.getMorphDataFromPlayer(player).getCompoundTag("kills");
+        Morph.proxy.tickHandlerServer.getMorphDataFromPlayer(player).setTag("kills", killsTag);
+
+		if(!Morph.proxy.tickHandlerServer.hasMorphState(player, nextState))
+        {
+            int kills = killsTag.getInteger(nextState.identifier);
+            if(++kills >= 5)
+            {
+                killsTag.removeTag(nextState.identifier);
+            }
+            else
+            {
+                killsTag.setInteger(nextState.identifier, kills);
+                return false;
+            }
+        }
+        else
+        {
+            killsTag.removeTag(nextState.identifier);
+            return false;
+        }
+        if(!forced && MinecraftForge.EVENT_BUS.post(new MorphAcquiredEvent(player, nextState.entInstance)))
 		{
 			return false;
 		}
