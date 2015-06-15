@@ -5,6 +5,7 @@ import ichun.common.core.network.PacketHandler;
 import morph.api.MorphAcquiredEvent;
 import morph.api.MorphEvent;
 import morph.common.Morph;
+import morph.common.ability.AbilityHandler;
 import morph.common.morph.MorphHandler;
 import morph.common.morph.MorphInfo;
 import morph.common.morph.MorphState;
@@ -12,6 +13,7 @@ import morph.common.packet.PacketMorphAcquisition;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.boss.IBossDisplayData;
+import net.minecraft.entity.monster.IMob;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.nbt.NBTTagCompound;
@@ -89,8 +91,30 @@ public class EntityHelper extends EntityHelperBase
 
 		if(!Morph.proxy.tickHandlerServer.hasMorphState(player, nextState))
         {
+            int needed;
+            if(living instanceof EntityPlayer)
+            {
+                needed = 1;
+            }
+            else if(living instanceof IBossDisplayData)
+            {
+                needed = 1;
+            }
+            else if(AbilityHandler.hasAbility(living.getClass(), "fly"))
+            {
+                needed = 15;
+            }
+            else if(living instanceof IMob)
+            {
+                needed = 10;
+            }
+            else
+            {
+                needed = 5;
+            }
+
             int kills = killsTag.getInteger(nextState.identifier);
-            if(++kills >= 5)
+            if(++kills >= needed)
             {
                 killsTag.removeTag(nextState.identifier);
             }
