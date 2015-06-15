@@ -110,6 +110,12 @@ public class Morph
 
         config.createIntBoolProperty("showPlayerLabel", "morph.config.prop.showPlayerLabel.name", "morph.config.prop.showPlayerLabel.comment", true, true, false);
 
+        config.createIntProperty("killsNeededPlayers", "morph.config.prop.killsNeededPlayers.name", "morph.config.prop.killsNeededPlayers.comment", true, false, 1, 1, 1023);
+        config.createIntProperty("killsNeededBosses", "morph.config.prop.killsNeededBosses.name", "morph.config.prop.killsNeededBosses.comment", true, false, 1, 1, 1023);
+        config.createIntProperty("killsNeededFlight", "morph.config.prop.killsNeededFlight.name", "morph.config.prop.killsNeededFlight.comment", true, false, 1, 1, 1023);
+        config.createIntProperty("killsNeededHostiles", "morph.config.prop.killsNeededHostiles.name", "morph.config.prop.killsNeededHostiles.comment", true, false, 1, 1, 1023);
+        config.createIntProperty("killsNeededAnimals", "morph.config.prop.killsNeededAnimals.name", "morph.config.prop.killsNeededAnimals.comment", true, false, 1, 1, 1023);
+
         config.setCurrentCategory("abilities", "morph.config.cat.abilities.name", "morph.config.cat.abilities.comment");
         config.createIntBoolProperty("abilities", "morph.config.prop.abilities.name", "morph.config.prop.abilities.comment", false, true, true);
         config.createStringProperty("customPatchLink", "morph.config.prop.customPatchLink.name", "morph.config.prop.customPatchLink.comment", false, false, "");

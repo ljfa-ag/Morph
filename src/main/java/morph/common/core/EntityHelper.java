@@ -94,34 +94,37 @@ public class EntityHelper extends EntityHelperBase
             int needed;
             if(living instanceof EntityPlayer)
             {
-                needed = 1;
+                needed = Morph.config.getInt("killsNeededPlayers");
             }
             else if(living instanceof IBossDisplayData)
             {
-                needed = 1;
+                needed = Morph.config.getInt("killsNeededBosses");
             }
             else if(AbilityHandler.hasAbility(living.getClass(), "fly"))
             {
-                needed = 15;
+                needed = Morph.config.getInt("killsNeededFlight");
             }
             else if(living instanceof IMob)
             {
-                needed = 10;
+                needed = Morph.config.getInt("killsNeededHostiles");
             }
             else
             {
-                needed = 5;
+                needed = Morph.config.getInt("killsNeededAnimals");
             }
 
-            int kills = killsTag.getInteger(nextState.identifier);
-            if(++kills >= needed)
+            if(needed > 1)
             {
-                killsTag.removeTag(nextState.identifier);
-            }
-            else
-            {
-                killsTag.setInteger(nextState.identifier, kills);
-                return false;
+                int kills = killsTag.getInteger(nextState.identifier);
+                if(++kills >= needed)
+                {
+                    killsTag.removeTag(nextState.identifier);
+                }
+                else
+                {
+                    killsTag.setInteger(nextState.identifier, kills);
+                    return false;
+                }
             }
         }
         else
