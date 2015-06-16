@@ -21,7 +21,7 @@ import net.minecraft.entity.monster.IMob;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.nbt.NBTTagInt;
+import net.minecraft.nbt.NBTTagShort;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.util.FakePlayer;
 
@@ -95,13 +95,13 @@ public class EntityHelper extends EntityHelperBase
         Morph.proxy.tickHandlerServer.getMorphDataFromPlayer(player).setTag("kills", killsTag);
 
         //Clean up states that have only been killed once
-        int allKills = Morph.proxy.tickHandlerServer.getMorphDataFromPlayer(player).getInteger("allKills");
+        short allKills = Morph.proxy.tickHandlerServer.getMorphDataFromPlayer(player).getShort("allKills");
         if(++allKills >= Morph.config.getInt("killsBeforeCleanup"))
         {
-            Iterator<Map.Entry<String, NBTTagInt>> ite = killsTag.tagMap.entrySet().iterator();
+            Iterator<Map.Entry<String, NBTTagShort>> ite = killsTag.tagMap.entrySet().iterator();
             while(ite.hasNext())
             {
-                Map.Entry<String, NBTTagInt> entry = ite.next();
+                Map.Entry<String, NBTTagShort> entry = ite.next();
                 if(entry.getValue().func_150287_d() <= 1 && !entry.getKey().equals(nextState.identifier))
                 {
                     ite.remove();
@@ -109,7 +109,7 @@ public class EntityHelper extends EntityHelperBase
             }
             allKills = 0;
         }
-        Morph.proxy.tickHandlerServer.getMorphDataFromPlayer(player).setInteger("allKills", allKills);
+        Morph.proxy.tickHandlerServer.getMorphDataFromPlayer(player).setShort("allKills", allKills);
 
         if(!Morph.proxy.tickHandlerServer.hasMorphState(player, nextState))
         {
@@ -137,14 +137,14 @@ public class EntityHelper extends EntityHelperBase
 
             if(needed > 1)
             {
-                int kills = killsTag.getInteger(nextState.identifier);
+                short kills = killsTag.getShort(nextState.identifier);
                 if(++kills >= needed)
                 {
                     killsTag.removeTag(nextState.identifier);
                 }
                 else
                 {
-                    killsTag.setInteger(nextState.identifier, kills);
+                    killsTag.setShort(nextState.identifier, kills);
                     return false;
                 }
             }
