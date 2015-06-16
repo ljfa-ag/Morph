@@ -2,6 +2,10 @@ package morph.common.core;
 
 import ichun.common.core.EntityHelperBase;
 import ichun.common.core.network.PacketHandler;
+
+import java.util.Iterator;
+import java.util.Map;
+
 import morph.api.MorphAcquiredEvent;
 import morph.api.MorphEvent;
 import morph.common.Morph;
@@ -17,6 +21,7 @@ import net.minecraft.entity.monster.IMob;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.NBTTagInt;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.util.FakePlayer;
 
@@ -89,7 +94,24 @@ public class EntityHelper extends EntityHelperBase
 		NBTTagCompound killsTag = Morph.proxy.tickHandlerServer.getMorphDataFromPlayer(player).getCompoundTag("kills");
         Morph.proxy.tickHandlerServer.getMorphDataFromPlayer(player).setTag("kills", killsTag);
 
-		if(!Morph.proxy.tickHandlerServer.hasMorphState(player, nextState))
+        //Clean up states that have only been killed once
+        int allKills = Morph.proxy.tickHandlerServer.getMorphDataFromPlayer(player).getInteger("allKills");
+        if(++allKills >= Morph.config.getInt("killsBeforeCleanup"))
+        {
+            Iterator<Map.Entry<String, NBTTagInt>> ite = killsTag.tagMap.entrySet().iterator();
+            while(ite.hasNext())
+            {
+                Map.Entry<String, NBTTagInt> entry = ite.next();
+                if(entry.getValue().func_150287_d() <= 1 && !entry.getKey().equals(nextState.identifier))
+                {
+                    ite.remove();
+                }
+            }
+            allKills = 0;
+        }
+        Morph.proxy.tickHandlerServer.getMorphDataFromPlayer(player).setInteger("allKills", allKills);
+
+        if(!Morph.proxy.tickHandlerServer.hasMorphState(player, nextState))
         {
             int needed;
             if(living instanceof EntityPlayer)

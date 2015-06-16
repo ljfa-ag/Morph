@@ -116,6 +116,8 @@ public class Morph
         config.createIntProperty("killsNeededHostiles", "morph.config.prop.killsNeededHostiles.name", "morph.config.prop.killsNeededHostiles.comment", true, false, 1, 1, 1023);
         config.createIntProperty("killsNeededAnimals", "morph.config.prop.killsNeededAnimals.name", "morph.config.prop.killsNeededAnimals.comment", true, false, 1, 1, 1023);
 
+        config.createIntProperty("killsBeforeCleanup", "morph.config.prop.killsBeforeCleanup.name", "morph.config.prop.killsBeforeCleanup.comment", true, false, 30, 5, 1023);
+
         config.setCurrentCategory("abilities", "morph.config.cat.abilities.name", "morph.config.cat.abilities.comment");
         config.createIntBoolProperty("abilities", "morph.config.prop.abilities.name", "morph.config.prop.abilities.comment", false, true, true);
         config.createStringProperty("customPatchLink", "morph.config.prop.customPatchLink.name", "morph.config.prop.customPatchLink.comment", false, false, "");
