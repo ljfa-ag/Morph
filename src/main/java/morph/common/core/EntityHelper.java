@@ -18,6 +18,7 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.boss.IBossDisplayData;
 import net.minecraft.entity.monster.IMob;
+import net.minecraft.entity.passive.EntityHorse;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.nbt.NBTTagCompound;
@@ -91,8 +92,19 @@ public class EntityHelper extends EntityHelperBase
 		MorphState prevState = new MorphState(player.worldObj, player.getCommandSenderName(), username1, prevTag, false);
 		MorphState nextState = new MorphState(player.worldObj, player.getCommandSenderName(), username2, nextTag, false);
 
+		//Handle the need of multiple kills
 		NBTTagCompound killsTag = Morph.proxy.tickHandlerServer.getMorphDataFromPlayer(player).getCompoundTag("kills");
         Morph.proxy.tickHandlerServer.getMorphDataFromPlayer(player).setTag("kills", killsTag);
+
+        String killIdentifier;
+        if(living instanceof EntityHorse) //Every horse is pretty much unique
+        {
+            killIdentifier = living.getClass().toString();
+        }
+        else
+        {
+            killIdentifier = nextState.identifier;
+        }
 
         //Clean up states that have only been killed once
         short allKills = Morph.proxy.tickHandlerServer.getMorphDataFromPlayer(player).getShort("allKills");
@@ -102,7 +114,7 @@ public class EntityHelper extends EntityHelperBase
             while(ite.hasNext())
             {
                 Map.Entry<String, NBTTagShort> entry = ite.next();
-                if(entry.getValue().func_150287_d() <= 1 && !entry.getKey().equals(nextState.identifier))
+                if(entry.getValue().func_150287_d() <= 1 && !entry.getKey().equals(killIdentifier))
                 {
                     ite.remove();
                 }
@@ -137,14 +149,14 @@ public class EntityHelper extends EntityHelperBase
 
             if(needed > 1)
             {
-                short kills = killsTag.getShort(nextState.identifier);
+                short kills = killsTag.getShort(killIdentifier);
                 if(++kills >= needed)
                 {
-                    killsTag.removeTag(nextState.identifier);
+                    killsTag.removeTag(killIdentifier);
                 }
                 else
                 {
-                    killsTag.setShort(nextState.identifier, kills);
+                    killsTag.setShort(killIdentifier, kills);
                     return false;
                 }
             }
